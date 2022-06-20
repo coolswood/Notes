@@ -1,17 +1,17 @@
 import update from 'immutability-helper'
-import type { CSSProperties, FC } from 'react'
-import { useCallback, useState } from 'react'
-import { useDrop } from 'react-dnd'
-import { DragItem } from 'src/types'
-import { ItemTypes } from '../CustomDragLayer/CustomDragLayer'
+import type {CSSProperties, FC} from 'react'
+import {useEffect, useRef} from 'react'
+import {createRef} from 'react'
+import {useCallback, useState} from 'react'
+import {useDrop} from 'react-dnd'
+import {getRandomInt} from 'src/helper'
+import {DragItem} from 'src/types'
+import {boxSize} from '../Box/Box'
+import {ItemTypes} from '../CustomDragLayer/CustomDragLayer'
 
-import { DraggableBox } from '../DraggableBox/DraggableBox'
+import {DraggableBox} from '../DraggableBox/DraggableBox'
 
-const styles: CSSProperties = {
-    width: window.screen.width,
-    height: window.screen.height,
-    position: 'relative',
-}
+import styles from './styles.module.scss'
 
 interface BoxMap {
     [key: string]: { top: number; left: number; title: string }
@@ -19,17 +19,30 @@ interface BoxMap {
 
 export const Container: FC = () => {
     const [boxes, setBoxes] = useState<BoxMap>({
-        a: { top: 20, left: 80, title: 'Drag me around' },
-        b: { top: 180, left: 20, title: 'Drag me too' },
+        a: {top: 20, left: 80, title: 'Drag me around'},
+        b: {top: 180, left: 20, title: 'Drag me too'},
     })
+
+    const createNewBox = (e: React.MouseEvent<HTMLElement>) => {
+        setBoxes(
+            {
+                ...boxes, ...{
+                    [getRandomInt()]: {
+                        top: e.screenY - boxSize.height / 2,
+                        left: e.screenX - boxSize.width / 2,
+                        title: getRandomInt()
+                    }
+                }
+            }
+        )
+    }
 
     const moveBox = useCallback(
         (id: string, left: number, top: number) => {
-            console.log(left, top)
             setBoxes(
                 update(boxes, {
                     [id]: {
-                        $merge: { left, top },
+                        $merge: {left, top},
                     },
                 }),
             )
@@ -57,7 +70,12 @@ export const Container: FC = () => {
     )
 
     return (
-        <div ref={drop} style={styles}>
+        <div ref={drop} style={{
+            width: window.screen.width,
+            height: window.screen.height,
+            position: 'relative',
+        }}>
+            <div className={styles.clickListener} onClick={createNewBox} />
             {Object.keys(boxes).map((key) => (
                 <DraggableBox
                     key={key}

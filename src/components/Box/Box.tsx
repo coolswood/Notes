@@ -8,9 +8,15 @@ export interface BoxProps {
     preview?: boolean
 }
 
+export const boxSize = {
+    width: 200,
+    height: 300,
+}
+
 export const Box: FC<BoxProps> = memo(function Box({ title, preview }) {
     return (
         <div
+            style={boxSize}
             className={styles.box}
             role={preview ? 'BoxPreview' : 'Box'}
         >
