@@ -26,12 +26,13 @@ export interface DraggableBoxProps {
     title: string
     left: number
     top: number
+    onInput: (test: string) => void
 }
 
 export const DraggableBox: FC<DraggableBoxProps> = memo(function DraggableBox(
     props,
 ) {
-    const { id, title, left, top } = props
+    const { id, title, left, top, onInput } = props
     const [{ isDragging }, drag, preview] = useDrag(
         () => ({
             type: ItemTypes.BOX,
@@ -53,7 +54,7 @@ export const DraggableBox: FC<DraggableBoxProps> = memo(function DraggableBox(
             style={getStyles(left, top, isDragging)}
             role="DraggableBox"
         >
-            <Box title={title} />
+            <Box title={title} onInput={onInput} />
         </div>
     )
 })

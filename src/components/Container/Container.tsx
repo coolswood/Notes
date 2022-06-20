@@ -18,10 +18,7 @@ interface BoxMap {
 }
 
 export const Container: FC = () => {
-    const [boxes, setBoxes] = useState<BoxMap>({
-        a: {top: 20, left: 80, title: 'Drag me around'},
-        b: {top: 180, left: 20, title: 'Drag me too'},
-    })
+    const [boxes, setBoxes] = useState<BoxMap>({});
 
     const createNewBox = (e: React.MouseEvent<HTMLElement>) => {
         setBoxes(
@@ -35,6 +32,10 @@ export const Container: FC = () => {
                 }
             }
         )
+    }
+
+    const updateCardValue = (value: string, id: string) => {
+        
     }
 
     const moveBox = useCallback(
@@ -69,6 +70,8 @@ export const Container: FC = () => {
         [moveBox],
     )
 
+    console.log(boxes)
+
     return (
         <div ref={drop} style={{
             width: window.screen.width,
@@ -78,6 +81,7 @@ export const Container: FC = () => {
             <div className={styles.clickListener} onClick={createNewBox} />
             {Object.keys(boxes).map((key) => (
                 <DraggableBox
+                    onInput={(test: string) => updateCardValue(test, key)}
                     key={key}
                     id={key}
                     {...(boxes[key] as { top: number; left: number; title: string })}
