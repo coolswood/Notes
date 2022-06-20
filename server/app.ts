@@ -1,10 +1,17 @@
 import fastify from 'fastify';
+import cors from '@fastify/cors';
+import {sqlite} from "./db";
 
 const app = fastify({ logger: true });
 
+app.register(cors, {
+    origin: "*",
+    methods: ["GET", "POST", "PUT"]
+});
+
 app.route({
     method: 'GET',
-    url: '/',
+    url: '/api/test',
     schema: {
         querystring: {
             name: { type: 'string' }
@@ -23,8 +30,17 @@ app.route({
         // E.g. check authentication
     },
     handler: async (request, reply) => {
+
         return { hello: 'world' }
     }
+});
+
+app.put<{ Body: { name: string }; Reply: {} }>("/api/create", async (request, reply) => {
+    const name = request.body.name
+
+    const data = await sqlite('userData').select(['name']);
+    console.log(data)
+    return true;
 });
 
 (async () => {

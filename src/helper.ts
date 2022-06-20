@@ -1,19 +1,18 @@
 import axios, { Method } from "axios";
 
-export const ApiRequest = <R>(
-    data: string,
+export const ApiRequest = <R, T>(
+    url: string,
+    data: T,
     method: Method = 'POST'
 ): Promise<R> => {
     return axios({
-        url: `https://mind-health.ru/gq`,
+        url: `http://localhost:3001/api/${url}`,
         headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
         },
         method,
-        data: {
-            query: data,
-        },
+        data,
     }).then(({ data }) => data.data);
 };
 
