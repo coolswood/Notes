@@ -19,19 +19,9 @@ export interface BoxDragPreviewState {
 
 export const BoxDragPreview: FC<BoxDragPreviewProps> = memo(
     function BoxDragPreview({ title }) {
-        const [tickTock, setTickTock] = useState(false)
-
-        useEffect(
-            function subscribeToIntervalTick() {
-                const interval = setInterval(() => setTickTock(!tickTock), 500)
-                return () => clearInterval(interval)
-            },
-            [tickTock],
-        )
-
         return (
             <div style={styles}>
-                <Box title={title} yellow={tickTock} preview />
+                <Box title={title} preview />
             </div>
         )
     },

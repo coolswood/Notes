@@ -8,27 +8,16 @@ import { ItemTypes } from '../CustomDragLayer/CustomDragLayer'
 import { DraggableBox } from '../DraggableBox/DraggableBox'
 
 const styles: CSSProperties = {
-    width: 300,
-    height: 300,
-    border: '1px solid black',
+    width: window.screen.width,
+    height: window.screen.height,
     position: 'relative',
-}
-
-export interface ContainerProps {
-    snapToGrid: boolean
-}
-
-function doSnapToGrid(x: number, y: number): [number, number] {
-    const snappedX = Math.round(x / 32) * 32
-    const snappedY = Math.round(y / 32) * 32
-    return [snappedX, snappedY]
 }
 
 interface BoxMap {
     [key: string]: { top: number; left: number; title: string }
 }
 
-export const Container: FC<ContainerProps> = ({ snapToGrid }) => {
+export const Container: FC = () => {
     const [boxes, setBoxes] = useState<BoxMap>({
         a: { top: 20, left: 80, title: 'Drag me around' },
         b: { top: 180, left: 20, title: 'Drag me too' },
@@ -36,6 +25,7 @@ export const Container: FC<ContainerProps> = ({ snapToGrid }) => {
 
     const moveBox = useCallback(
         (id: string, left: number, top: number) => {
+            console.log(left, top)
             setBoxes(
                 update(boxes, {
                     [id]: {
@@ -58,9 +48,6 @@ export const Container: FC<ContainerProps> = ({ snapToGrid }) => {
 
                 let left = Math.round(item.left + delta.x)
                 let top = Math.round(item.top + delta.y)
-                if (snapToGrid) {
-                    ;[left, top] = doSnapToGrid(left, top)
-                }
 
                 moveBox(item.id, left, top)
                 return undefined

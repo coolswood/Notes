@@ -1,6 +1,4 @@
 import axios, { Method } from "axios";
-import dayjs from "dayjs";
-import { api } from "diary-mind-health";
 
 export const ApiRequest = <R>(
     data: string,
@@ -18,9 +16,3 @@ export const ApiRequest = <R>(
         },
     }).then(({ data }) => data.data);
 };
-
-export function snapToGrid(x: number, y: number): [number, number] {
-    const snappedX = Math.round(x / 32) * 32
-    const snappedY = Math.round(y / 32) * 32
-    return [snappedX, snappedY]
-}

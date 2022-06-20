@@ -4,12 +4,6 @@ import { useDragLayer } from 'react-dnd'
 
 import { BoxDragPreview } from '../BoxDragPreview/BoxDragPreview'
 
-export function snapToGrid(x: number, y: number): [number, number] {
-    const snappedX = Math.round(x / 32) * 32
-    const snappedY = Math.round(y / 32) * 32
-    return [snappedX, snappedY]
-}
-
 export const ItemTypes = {
     BOX: 'box',
 }
@@ -27,7 +21,6 @@ const layerStyles: CSSProperties = {
 function getItemStyles(
     initialOffset: XYCoord | null,
     currentOffset: XYCoord | null,
-    isSnapToGrid: boolean,
 ) {
     if (!initialOffset || !currentOffset) {
         return {
@@ -37,14 +30,6 @@ function getItemStyles(
 
     let { x, y } = currentOffset
 
-    if (isSnapToGrid) {
-        x -= initialOffset.x
-        y -= initialOffset.y
-        ;[x, y] = snapToGrid(x, y)
-        x += initialOffset.x
-        y += initialOffset.y
-    }
-
     const transform = `translate(${x}px, ${y}px)`
     return {
         transform,
@@ -52,11 +37,7 @@ function getItemStyles(
     }
 }
 
-export interface CustomDragLayerProps {
-    snapToGrid: boolean
-}
-
-export const CustomDragLayer: FC<CustomDragLayerProps> = (props) => {
+export const CustomDragLayer: FC = (props) => {
     const { itemType, isDragging, item, initialOffset, currentOffset } =
         useDragLayer((monitor) => ({
             item: monitor.getItem(),
@@ -66,24 +47,15 @@ export const CustomDragLayer: FC<CustomDragLayerProps> = (props) => {
             isDragging: monitor.isDragging(),
         }))
 
-    function renderItem() {
-        switch (itemType) {
-            case ItemTypes.BOX:
-                return <BoxDragPreview title={item.title} />
-            default:
-                return null
-        }
-    }
-
     if (!isDragging) {
         return null
     }
     return (
         <div style={layerStyles}>
             <div
-                style={getItemStyles(initialOffset, currentOffset, props.snapToGrid)}
+                style={getItemStyles(initialOffset, currentOffset)}
             >
-                {renderItem()}
+                <BoxDragPreview title={item.title} />
             </div>
         </div>
     )
