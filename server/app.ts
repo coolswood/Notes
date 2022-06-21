@@ -1,7 +1,6 @@
 import fastify from 'fastify';
 import cookie, {FastifyCookieOptions} from '@fastify/cookie';
 import cors from '@fastify/cors';
-import fs from 'fs';
 import {initDb} from "./db";
 
 const app = fastify({ logger: true });
@@ -32,7 +31,7 @@ app.put<{ Body: { name: string }; Reply: {} }>("/api/create", async (request, re
 });
 
 app.get<{ Body: {}; Reply: {} }>("/api/tickets", async (request, reply) => {
-    console.log(request)
+    console.log(request.cookies.user)
     // const name = request.body.name;
     //
     // const db = await initDb()
@@ -45,11 +44,6 @@ app.get<{ Body: {}; Reply: {} }>("/api/tickets", async (request, reply) => {
     //
     // console.log(data)
     return true;
-});
-
-app.get('/*', async (request, reply) => {
-    const bufferIndexHtml = fs.readFileSync(__dirname + '/../index.html');
-    return reply.type('text/html').send(bufferIndexHtml)
 });
 
 (async () => {

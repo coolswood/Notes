@@ -8,5 +8,15 @@ export default defineConfig({
     alias: {
       'src': './src',
     },
-  }
+  },
+  server: {
+    proxy: {
+      "/api": {
+        target: "http://localhost:3001",
+        changeOrigin: true,
+        ws: true,
+        secure: false,
+      },
+    },
+  },
 })

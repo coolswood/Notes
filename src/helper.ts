@@ -6,7 +6,7 @@ export const ApiRequest = <R, T>(
     method: Method = 'POST'
 ): Promise<R> => {
     return axios({
-        url: `http://localhost:3001/api/${url}`,
+        url: `/api/${url}`,
         headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
