@@ -4,7 +4,7 @@ import { memo } from 'react'
 import styles from './styles.module.scss'
 
 export interface BoxProps {
-    title: string
+    text: string
     preview?: boolean
     onInput?: (e: String) => void
 }
@@ -14,7 +14,7 @@ export const boxSize = {
     height: 300,
 }
 
-export const Box: FC<BoxProps> = memo(function Box({ title, preview, onInput }) {
+export const Box: FC<BoxProps> = memo(function Box({ text, preview, onInput }) {
     return (
         <div
             onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,7 +27,7 @@ export const Box: FC<BoxProps> = memo(function Box({ title, preview, onInput }) 
             className={styles.box}
             role={preview ? 'BoxPreview' : 'Box'}
         >
-            {title}
+            {text}
         </div>
     )
 })

@@ -5,9 +5,13 @@ import {initDb} from "./db";
 
 const app = fastify({ logger: true });
 
+const hours_3 = 1000 * 60 * 60 * 3;
+
 app.register(cookie, {
     secret: "my-secret",
-    parseOptions: {}
+    parseOptions: {
+
+    }
 } as FastifyCookieOptions )
 
 app.register(cors, {
@@ -15,35 +19,44 @@ app.register(cors, {
     methods: ["GET", "POST", "PUT"]
 });
 
-app.put<{ Body: { name: string }; Reply: {} }>("/api/create", async (request, reply) => {
-    const name = request.body.name;
+app.put<{ Body: { user: string }; Reply: {} }>("/api/create", async (request, reply) => {
+    const user = request.body.user;
 
     const db = await initDb()
 
-    await db('userData').insert({name});
+    await db('userName').insert({user});
 
-    const data = await db('userData').select(['name']);
+    const data = await db('userName').select(['user']);
 
-    reply.cookie('user', name);
+    reply.cookie('user', user, {maxAge: hours_3});
 
     console.log(data)
     return true;
 });
 
 app.get<{ Body: {}; Reply: {} }>("/api/tickets", async (request, reply) => {
-    console.log(request.cookies.user)
-    // const name = request.body.name;
-    //
-    // const db = await initDb()
-    //
-    // await db('userData').insert({name});
-    //
-    // const data = await db('userData').select(['name']);
-    //
-    // reply.cookie('user', name);
-    //
-    // console.log(data)
-    return true;
+    const user = request.cookies.user;
+
+    const db = await initDb();
+
+    const data = await db('userData').select('*');
+
+    return data;
+});
+
+app.put<{ Body: { text: string; screenY: string; screenX: string }; Reply: {} }>("/api/ticket", async (request, reply) => {
+    const user = request.cookies.user;
+    const {text, screenY, screenX} = request.body;
+
+    const db = await initDb()
+
+    await db('userData').insert({
+        text, screenY, screenX, user
+    });
+
+    const data = await db('userData').select('*');
+
+    return data;
 });
 
 (async () => {

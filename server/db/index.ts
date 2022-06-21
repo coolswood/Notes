@@ -7,8 +7,22 @@ const sqlite = knex({
     useNullAsDefault: true,
 });
 
-export const initDb = (): Promise<Knex> => {
-    return sqlite.schema
+export const initDb = async (): Promise<Knex> => {
+
+    await sqlite.schema
+        .hasTable('userName')
+        .then(async function (exists: boolean) {
+            if (!exists) {
+                await sqlite.schema.createTable(
+                    'userName',
+                    function (table: Knex.CreateTableBuilder) {
+                        table.increments();
+                        table.string('user');
+                    });
+            }
+        });
+
+    await sqlite.schema
         .hasTable('userData')
         .then(async function (exists: boolean) {
             if (!exists) {
@@ -16,12 +30,13 @@ export const initDb = (): Promise<Knex> => {
                     'userData',
                     function (table: Knex.CreateTableBuilder) {
                         table.increments();
-                        table.string('name');
-                        table.timestamps();
-                    }
-                );
+                        table.string('user');
+                        table.string('text');
+                        table.string('screenY');
+                        table.string('screenX');
+                    });
             }
-
-            return sqlite;
         });
+
+    return sqlite;
 }

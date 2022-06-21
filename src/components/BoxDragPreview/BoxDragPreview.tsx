@@ -10,7 +10,7 @@ const styles: CSSProperties = {
 }
 
 export interface BoxDragPreviewProps {
-    title: string
+    text: string
 }
 
 export interface BoxDragPreviewState {
@@ -18,10 +18,10 @@ export interface BoxDragPreviewState {
 }
 
 export const BoxDragPreview: FC<BoxDragPreviewProps> = memo(
-    function BoxDragPreview({ title }) {
+    function BoxDragPreview({ text }) {
         return (
             <div style={styles}>
-                <Box title={title} preview />
+                <Box title={text} preview />
             </div>
         )
     },

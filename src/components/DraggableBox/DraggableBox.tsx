@@ -23,25 +23,26 @@ function getStyles(
 
 export interface DraggableBoxProps {
     id: string
-    title: string
-    left: number
-    top: number
-    onInput: (test: string) => void
+    text: string
+    screenX: number
+    screenY: number
+    onInput: (test: string
+    ) => void
 }
 
 export const DraggableBox: FC<DraggableBoxProps> = memo(function DraggableBox(
     props,
 ) {
-    const { id, title, left, top, onInput } = props
+    const { id, text, screenX, screenY, onInput } = props
     const [{ isDragging }, drag, preview] = useDrag(
         () => ({
             type: ItemTypes.BOX,
-            item: { id, left, top, title },
+            item: { id, screenY, screenX, text },
             collect: (monitor: DragSourceMonitor) => ({
                 isDragging: monitor.isDragging(),
             }),
         }),
-        [id, left, top, title],
+        [id, screenY, screenX, text],
     )
 
     useEffect(() => {
@@ -51,10 +52,10 @@ export const DraggableBox: FC<DraggableBoxProps> = memo(function DraggableBox(
     return (
         <div
             ref={drag}
-            style={getStyles(left, top, isDragging)}
+            style={getStyles(screenX, screenY, isDragging)}
             role="DraggableBox"
         >
-            <Box title={title} onInput={onInput} />
+            <Box title={text} onInput={onInput} />
         </div>
     )
 })
