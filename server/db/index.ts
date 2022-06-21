@@ -48,8 +48,8 @@ export const initDb = async (): Promise<Knex> => {
                         table.string('id').index().primary();
                         table.string('user');
                         table.string('text');
-                        table.string('screenY');
-                        table.string('screenX');
+                        table.integer('screenY');
+                        table.integer('screenX');
                     });
             }
         });

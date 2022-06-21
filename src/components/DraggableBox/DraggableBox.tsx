@@ -3,9 +3,9 @@ import { memo, useEffect } from 'react'
 import type { DragSourceMonitor } from 'react-dnd'
 import { useDrag } from 'react-dnd'
 import { getEmptyImage } from 'react-dnd-html5-backend'
+import { ItemTypes } from 'src/constants'
 
 import { Box } from '../Box/Box'
-import { ItemTypes } from '../CustomDragLayer/CustomDragLayer'
 
 function getStyles(
     left: number,
@@ -26,14 +26,13 @@ export interface DraggableBoxProps {
     text: string
     screenX: number
     screenY: number
-    onInput: (test: string
-    ) => void
+    onUpdateText: (text: string) => void
 }
 
 export const DraggableBox: FC<DraggableBoxProps> = memo(function DraggableBox(
     props,
 ) {
-    const { id, text, screenX, screenY, onInput } = props
+    const { id, text, screenX, screenY, onUpdateText } = props
     const [{ isDragging }, drag, preview] = useDrag(
         () => ({
             type: ItemTypes.BOX,
@@ -55,7 +54,7 @@ export const DraggableBox: FC<DraggableBoxProps> = memo(function DraggableBox(
             style={getStyles(screenX, screenY, isDragging)}
             role="DraggableBox"
         >
-            <Box title={text} onInput={onInput} />
+            <Box text={text} onUpdateText={onUpdateText} />
         </div>
     )
 })

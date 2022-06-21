@@ -4,10 +4,9 @@ import {useEffect, useRef} from 'react'
 import {createRef} from 'react'
 import {useCallback, useState} from 'react'
 import {useDrop} from 'react-dnd'
+import {boxSize, ItemTypes } from 'src/constants'
 import {ApiRequest, getRandomInt} from 'src/helper'
 import type {DragItem} from 'src/types'
-import {boxSize} from '../Box/Box'
-import {ItemTypes} from '../CustomDragLayer/CustomDragLayer'
 
 import {DraggableBox} from '../DraggableBox/DraggableBox'
 
@@ -16,11 +15,23 @@ import styles from './styles.module.scss'
 type BoxMap = api.getTickets.response;
 
 export const Container: FC = () => {
+    const [isLoaded, setIsLoaded] = useState(false);
     const [boxes, setBoxes] = useState<BoxMap>({});
 
+    const authUser = () => {
+        const result = prompt('Fill your name');
+
+        ApiRequest('create', {user: result}, 'PUT').then(() => setIsLoaded(true));
+    }
+
     useEffect(() => {
-        ApiRequest<api.getTickets.response, api.getTickets.request>('tickets', {}, 'GET').then(setBoxes).catch(console.error)
-    }, [])
+            ApiRequest<api.getTickets.response, api.getTickets.request>('tickets', {}, 'GET').then((response) => {
+                setBoxes(response);
+                setIsLoaded(true);
+            }).catch(() => {
+                authUser();
+            })
+    }, [isLoaded])
 
     const createNewBox = (e: React.MouseEvent<HTMLElement>) => {
         const id = getRandomInt();
@@ -29,10 +40,10 @@ export const Container: FC = () => {
 
         ApiRequest<api.putTicket.response[], api.putTicket.request>('ticket', {
             id,
-            text: 'Тестовый запрос',
+            text: 'Write me something important...',
             screenY: screenY,
             screenX: screenX
-        }, 'PUT').then(console.log);
+        }, 'PUT');
 
         setBoxes(
             {
@@ -40,7 +51,7 @@ export const Container: FC = () => {
                     [id]: {
                         screenY,
                         screenX,
-                        text: id,
+                        text: 'Write me something important...',
                         canEdit: true,
                     }
                 }
@@ -48,12 +59,13 @@ export const Container: FC = () => {
         )
     }
 
-    const updateCardValue = (value: string, id: string) => {
-        
-    }
+    const moveBox = (id: string, screenX: number, screenY: number) => {
+        ApiRequest<api.patchTicket.response, api.patchTicket.request>('ticket', {
+            id,
+            screenX,
+            screenY
+        }, 'PATCH');
 
-    const moveBox = useCallback(
-        (id: string, screenX: number, screenY: number) => {
             setBoxes(
                 update(boxes, {
                     [id]: {
@@ -61,9 +73,22 @@ export const Container: FC = () => {
                     },
                 }),
             )
-        },
-        [boxes],
-    )
+        }
+
+        const onUpdateText = (id: string, text: string) => {
+            ApiRequest<api.patchTicket.response, api.patchTicket.request>('ticket', {
+                id,
+                text
+            }, 'PATCH');
+
+            setBoxes(
+                update(boxes, {
+                    [id]: {
+                        $merge: {text},
+                    },
+                }),
+            )
+        }
 
     const [, drop] = useDrop(
         () => ({
@@ -84,7 +109,7 @@ export const Container: FC = () => {
         [moveBox],
     )
 
-    console.log(boxes)
+    if(!isLoaded) return null;
 
     return (
         <div ref={drop} style={{
@@ -92,10 +117,10 @@ export const Container: FC = () => {
             height: window.screen.height,
             position: 'relative',
         }}>
-            <div className={styles.clickListener} onClick={createNewBox} />
+            <div className={styles.clickListener} onClick={createNewBox}/>
             {Object.keys(boxes).map((key) => (
                 <DraggableBox
-                    onInput={(test: string) => updateCardValue(test, key)}
+                    onUpdateText={(text) => onUpdateText(key, text)}
                     key={key}
                     id={key}
                     {...(boxes[key] as { screenY: number; screenX: number; text: string })}

@@ -34,6 +34,10 @@ app.put<{ Body: { user: string }; Reply: {} }>("/api/create", async (request, re
 app.get<{ Body: api.getTickets.request; Reply: api.getTickets.response }>("/api/tickets", async (request, reply) => {
     const user = request.cookies.user;
 
+    if(user == undefined) {
+        return reply.status(401).send();
+    }
+
     const db = await initDb();
 
     const data = await db('userData').select('*');
@@ -61,7 +65,17 @@ app.put<{ Body: api.putTicket.request; Reply: api.putTicket.response }>("/api/ti
         id, text, screenY, screenX, user
     });
 
-    const data = await db('userData').select('*');
+    return reply.send({});
+});
+
+app.patch<{ Body: api.patchTicket.request; Reply: api.patchTicket.response }>("/api/ticket", async (request, reply) => {
+    const {id, text, screenY, screenX} = request.body;
+
+    const db = await initDb()
+
+    await db('userData').where({id}).update({
+        text, screenY, screenX
+    });
 
     return reply.send({});
 });

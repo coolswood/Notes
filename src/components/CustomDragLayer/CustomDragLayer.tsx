@@ -4,10 +4,6 @@ import { useDragLayer } from 'react-dnd'
 
 import { BoxDragPreview } from '../BoxDragPreview/BoxDragPreview'
 
-export const ItemTypes = {
-    BOX: 'box',
-}
-
 const layerStyles: CSSProperties = {
     position: 'fixed',
     pointerEvents: 'none',

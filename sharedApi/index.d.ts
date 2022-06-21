@@ -13,4 +13,9 @@ declare namespace api {
         type request = { id: string, text: string; screenY: number; screenX: number };
         type response = {};
     }
+
+    namespace patchTicket {
+        type request = { id: string, text?: string; screenY?: number; screenX?: number };
+        type response = {};
+    }
 }
