@@ -5,7 +5,7 @@ import {createRef} from 'react'
 import {useCallback, useState} from 'react'
 import {useDrop} from 'react-dnd'
 import {ApiRequest, getRandomInt} from 'src/helper'
-import {DragItem} from 'src/types'
+import type {DragItem} from 'src/types'
 import {boxSize} from '../Box/Box'
 import {ItemTypes} from '../CustomDragLayer/CustomDragLayer'
 
@@ -21,28 +21,30 @@ export const Container: FC = () => {
     const [boxes, setBoxes] = useState<BoxMap>({});
 
     useEffect(() => {
-        ApiRequest('tickets', {}, 'GET').then((data) => {
-
-        })
+        ApiRequest<api.getTickets.response[], api.getTickets.request>('tickets', {}, 'GET').then((data) => {
+            console.log(data, 111)
+        }).catch(console.error)
     }, [])
 
     const createNewBox = (e: React.MouseEvent<HTMLElement>) => {
+        const id = getRandomInt();
         const screenY = e.screenY - boxSize.height / 2;
         const screenX = e.screenX - boxSize.width / 2;
 
-        // ApiRequest('ticket', {
-        //     text: 'Тестовый запрос',
-        //     screenY: String(screenY),
-        //     screenX: String(screenX)
-        // }, 'PUT').then(console.log);
+        ApiRequest('ticket', {
+            id,
+            text: 'Тестовый запрос',
+            screenY: String(screenY),
+            screenX: String(screenX)
+        }, 'PUT').then(console.log);
 
         setBoxes(
             {
                 ...boxes, ...{
-                    [getRandomInt()]: {
+                    [id]: {
                         screenY,
                         screenX,
-                        text: getRandomInt()
+                        text: id
                     }
                 }
             }

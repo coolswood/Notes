@@ -29,7 +29,7 @@ export const initDb = async (): Promise<Knex> => {
                 await sqlite.schema.createTable(
                     'userData',
                     function (table: Knex.CreateTableBuilder) {
-                        table.increments();
+                        table.string('id').index().primary();
                         table.string('user');
                         table.string('text');
                         table.string('screenY');

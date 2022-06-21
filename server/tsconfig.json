@@ -15,11 +15,15 @@
     "lib": ["es6"],
     "moduleResolution": "node"
   },
+  "ts-node": {
+    "files": true
+  },
   "paths": {
     "@app/*": ["src/*"]
   },
   "include": [
-    "./**/*.ts"
+    "./**/*.ts",
+    "../sharedApi"
   ],
   "exclude": [
     "node_modules",

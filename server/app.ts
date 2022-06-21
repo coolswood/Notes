@@ -34,29 +34,29 @@ app.put<{ Body: { user: string }; Reply: {} }>("/api/create", async (request, re
     return true;
 });
 
-app.get<{ Body: {}; Reply: {} }>("/api/tickets", async (request, reply) => {
+app.get<{ Body: api.getTickets.request; Reply: api.getTickets.response[] }>("/api/tickets", async (request, reply) => {
     const user = request.cookies.user;
 
     const db = await initDb();
 
     const data = await db('userData').select('*');
 
-    return data;
+    return reply.send(data);
 });
 
-app.put<{ Body: { text: string; screenY: string; screenX: string }; Reply: {} }>("/api/ticket", async (request, reply) => {
+app.put<{ Body: { id: string, text: string; screenY: string; screenX: string }; Reply: {} }>("/api/ticket", async (request, reply) => {
     const user = request.cookies.user;
-    const {text, screenY, screenX} = request.body;
+    const {id, text, screenY, screenX} = request.body;
 
     const db = await initDb()
 
     await db('userData').insert({
-        text, screenY, screenX, user
+        id, text, screenY, screenX, user
     });
 
     const data = await db('userData').select('*');
 
-    return data;
+    return {};
 });
 
 (async () => {

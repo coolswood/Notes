@@ -14,12 +14,12 @@ export const ApiRequest = <R, T>(
         withCredentials: true,
         method,
         data,
-    }).then(({ data }) => data.data);
+    }).then(({ data }) => data);
 };
 
 export const getRandomInt = () => {
-    const min = 1;
+    const min = 1000;
     const max = 100000;
 
-    return Math.floor(Math.random() * (max - min)) + min;
+    return String(Math.floor(Math.random() * (max - min)) + min);
 }
