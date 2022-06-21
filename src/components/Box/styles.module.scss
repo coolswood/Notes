@@ -1,6 +1,14 @@
 .box {
   border: 1px solid gold;
   background: white;
+  padding: 1rem;
+  z-index: 2;
+}
+
+.boxDisabled {
+  background: #e1e1e1;
+  color: white;
+  z-index: 1;
 }
 
 .editWrapper {

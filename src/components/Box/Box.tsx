@@ -1,3 +1,4 @@
+import clsx from 'clsx'
 import type {CSSProperties, FC} from 'react'
 import {useState} from 'react'
 import {memo} from 'react'
@@ -8,11 +9,12 @@ import styles from './styles.module.scss'
 export interface BoxProps {
     text: string
     preview?: boolean
+    canEdit?: boolean
     onInput?: (e: String) => void
     onUpdateText?: (text: String) => void
 }
 
-export const Box: FC<BoxProps> = memo(function Box({text, preview, onInput, onUpdateText}) {
+export const Box: FC<BoxProps> = memo(function Box({text, preview, onInput, onUpdateText, canEdit}) {
     const [value, setValue] = useState(text);
     const [isEdit, setIsEdit] = useState(false);
 
@@ -24,7 +26,7 @@ export const Box: FC<BoxProps> = memo(function Box({text, preview, onInput, onUp
     return (
         <div
             style={boxSize}
-            className={styles.box}
+            className={clsx(styles.box, !canEdit && styles.boxDisabled)}
             role={preview ? 'BoxPreview' : 'Box'}
         >
             {isEdit ? <div className={styles.editWrapper}>

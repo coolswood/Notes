@@ -11,6 +11,7 @@ function getStyles(
     left: number,
     top: number,
     isDragging: boolean,
+    canEdit: boolean,
 ): CSSProperties {
     const transform = `translate3d(${left}px, ${top}px, 0)`
     return {
@@ -18,6 +19,7 @@ function getStyles(
         transform,
         opacity: isDragging ? 0 : 1,
         height: isDragging ? 0 : '',
+        zIndex: canEdit ? 1 : 0,
     }
 }
 
@@ -26,13 +28,14 @@ export interface DraggableBoxProps {
     text: string
     screenX: number
     screenY: number
+    canEdit: boolean
     onUpdateText: (text: string) => void
 }
 
 export const DraggableBox: FC<DraggableBoxProps> = memo(function DraggableBox(
     props,
 ) {
-    const { id, text, screenX, screenY, onUpdateText } = props
+    const { id, text, screenX, screenY, onUpdateText, canEdit } = props
     const [{ isDragging }, drag, preview] = useDrag(
         () => ({
             type: ItemTypes.BOX,
@@ -50,11 +53,11 @@ export const DraggableBox: FC<DraggableBoxProps> = memo(function DraggableBox(
 
     return (
         <div
-            ref={drag}
-            style={getStyles(screenX, screenY, isDragging)}
+            ref={canEdit ? drag : undefined}
+            style={{...getStyles(screenX, screenY, isDragging, canEdit)}}
             role="DraggableBox"
         >
-            <Box text={text} onUpdateText={onUpdateText} />
+            <Box text={text} canEdit={canEdit} onUpdateText={onUpdateText} />
         </div>
     )
 })

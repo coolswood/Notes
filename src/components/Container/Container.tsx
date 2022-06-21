@@ -123,7 +123,7 @@ export const Container: FC = () => {
                     onUpdateText={(text) => onUpdateText(key, text)}
                     key={key}
                     id={key}
-                    {...(boxes[key] as { screenY: number; screenX: number; text: string })}
+                    {...boxes[key]}
                 />
             ))}
         </div>
