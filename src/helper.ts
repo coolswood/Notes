@@ -11,6 +11,7 @@ export const ApiRequest = <R, T>(
             Accept: 'application/json',
             'Content-Type': 'application/json',
         },
+        withCredentials: true,
         method,
         data,
     }).then(({ data }) => data.data);
