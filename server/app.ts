@@ -49,6 +49,7 @@ app.get<{ Body: api.getTickets.request; Reply: api.getTickets.response }>("/api/
             screenY: i.screenY,
             screenX: i.screenX,
             canEdit: i.user === user,
+            user: i.user !== user ? user : undefined
         }
 
         return acc;

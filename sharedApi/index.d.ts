@@ -4,7 +4,7 @@ declare namespace api {
         type response = {
             [id: string]:
                 {
-                    text: string; screenY: number; screenX: number, canEdit: boolean
+                    text: string; screenY: number; screenX: number, canEdit: boolean, user?: string;
                 }
         };
     }

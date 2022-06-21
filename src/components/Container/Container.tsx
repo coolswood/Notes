@@ -4,7 +4,7 @@ import {useEffect, useRef} from 'react'
 import {createRef} from 'react'
 import {useCallback, useState} from 'react'
 import {useDrop} from 'react-dnd'
-import {boxSize, ItemTypes } from 'src/constants'
+import {boxSize, ItemTypes, placeholder} from 'src/constants'
 import {ApiRequest, getRandomInt} from 'src/helper'
 import type {DragItem} from 'src/types'
 
@@ -40,7 +40,7 @@ export const Container: FC = () => {
 
         ApiRequest<api.putTicket.response[], api.putTicket.request>('ticket', {
             id,
-            text: 'Write me something important...',
+            text: placeholder,
             screenY: screenY,
             screenX: screenX
         }, 'PUT');
@@ -51,7 +51,7 @@ export const Container: FC = () => {
                     [id]: {
                         screenY,
                         screenX,
-                        text: 'Write me something important...',
+                        text: placeholder,
                         canEdit: true,
                     }
                 }

@@ -29,13 +29,14 @@ export interface DraggableBoxProps {
     screenX: number
     screenY: number
     canEdit: boolean
+    user?: string
     onUpdateText: (text: string) => void
 }
 
 export const DraggableBox: FC<DraggableBoxProps> = memo(function DraggableBox(
     props,
 ) {
-    const { id, text, screenX, screenY, onUpdateText, canEdit } = props
+    const { id, text, screenX, screenY, onUpdateText, canEdit, user } = props
     const [{ isDragging }, drag, preview] = useDrag(
         () => ({
             type: ItemTypes.BOX,
@@ -57,7 +58,7 @@ export const DraggableBox: FC<DraggableBoxProps> = memo(function DraggableBox(
             style={{...getStyles(screenX, screenY, isDragging, canEdit)}}
             role="DraggableBox"
         >
-            <Box text={text} canEdit={canEdit} onUpdateText={onUpdateText} />
+            <Box text={text} canEdit={canEdit} onUpdateText={onUpdateText} user={user} />
         </div>
     )
 })
