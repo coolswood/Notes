@@ -21,7 +21,7 @@ export const BoxDragPreview: FC<BoxDragPreviewProps> = memo(
     function BoxDragPreview({ text }) {
         return (
             <div style={styles}>
-                <Box title={text} preview />
+                <Box text={text} preview />
             </div>
         )
     },

@@ -1,6 +1,22 @@
 import knex from 'knex';
 import type {Knex} from 'knex';
 
+declare module 'knex/types/tables' {
+    interface Tables {
+        userName: {
+            id: string;
+            user: string;
+        },
+        userData: {
+            id: string;
+            user: string;
+            text: string;
+            screenY: number;
+            screenX: number;
+        }
+    }
+}
+
 const sqlite = knex({
     client: 'better-sqlite3',
     connection: ':memory:',

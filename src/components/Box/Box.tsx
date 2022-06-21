@@ -17,12 +17,6 @@ export const boxSize = {
 export const Box: FC<BoxProps> = memo(function Box({ text, preview, onInput }) {
     return (
         <div
-            onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
-                if(onInput) {
-                    onInput(e.target.innerText)
-                }
-            }}
-            contentEditable="true"
             style={boxSize}
             className={styles.box}
             role={preview ? 'BoxPreview' : 'Box'}

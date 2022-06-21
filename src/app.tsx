@@ -10,9 +10,9 @@ import {ApiRequest} from "src/helper";
 
 export const App: FC = () => {
     useEffect(() => {
-        // const result = prompt('Введите имя');
+        const result = prompt('Введите имя');
 
-        // ApiRequest('create', {name: result}, 'PUT').then(console.log);
+        ApiRequest('create', {name: result}, 'PUT').then(console.log);
     }, [])
 
     return (

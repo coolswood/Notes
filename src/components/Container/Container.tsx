@@ -13,17 +13,13 @@ import {DraggableBox} from '../DraggableBox/DraggableBox'
 
 import styles from './styles.module.scss'
 
-interface BoxMap {
-    [key: string]: { screenY: number; screenX: number; text: string }
-}
+type BoxMap = api.getTickets.response;
 
 export const Container: FC = () => {
     const [boxes, setBoxes] = useState<BoxMap>({});
 
     useEffect(() => {
-        ApiRequest<api.getTickets.response[], api.getTickets.request>('tickets', {}, 'GET').then((data) => {
-            console.log(data, 111)
-        }).catch(console.error)
+        ApiRequest<api.getTickets.response, api.getTickets.request>('tickets', {}, 'GET').then(setBoxes).catch(console.error)
     }, [])
 
     const createNewBox = (e: React.MouseEvent<HTMLElement>) => {
@@ -31,11 +27,11 @@ export const Container: FC = () => {
         const screenY = e.screenY - boxSize.height / 2;
         const screenX = e.screenX - boxSize.width / 2;
 
-        ApiRequest('ticket', {
+        ApiRequest<api.putTicket.response[], api.putTicket.request>('ticket', {
             id,
             text: 'Тестовый запрос',
-            screenY: String(screenY),
-            screenX: String(screenX)
+            screenY: screenY,
+            screenX: screenX
         }, 'PUT').then(console.log);
 
         setBoxes(
@@ -44,7 +40,8 @@ export const Container: FC = () => {
                     [id]: {
                         screenY,
                         screenX,
-                        text: id
+                        text: id,
+                        canEdit: true,
                     }
                 }
             }

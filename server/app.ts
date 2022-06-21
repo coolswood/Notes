@@ -3,16 +3,14 @@ import cookie, {FastifyCookieOptions} from '@fastify/cookie';
 import cors from '@fastify/cors';
 import {initDb} from "./db";
 
-const app = fastify({ logger: true });
+const app = fastify({logger: true});
 
 const hours_3 = 1000 * 60 * 60 * 3;
 
 app.register(cookie, {
     secret: "my-secret",
-    parseOptions: {
-
-    }
-} as FastifyCookieOptions )
+    parseOptions: {}
+} as FastifyCookieOptions)
 
 app.register(cors, {
     origin: "*",
@@ -30,21 +28,30 @@ app.put<{ Body: { user: string }; Reply: {} }>("/api/create", async (request, re
 
     reply.cookie('user', user, {maxAge: hours_3});
 
-    console.log(data)
     return true;
 });
 
-app.get<{ Body: api.getTickets.request; Reply: api.getTickets.response[] }>("/api/tickets", async (request, reply) => {
+app.get<{ Body: api.getTickets.request; Reply: api.getTickets.response }>("/api/tickets", async (request, reply) => {
     const user = request.cookies.user;
 
     const db = await initDb();
 
     const data = await db('userData').select('*');
 
-    return reply.send(data);
+    return reply.send(data.reduce<api.getTickets.response>((acc, i) => {
+
+        acc[i.id] = {
+            text: i.text,
+            screenY: i.screenY,
+            screenX: i.screenX,
+            canEdit: i.user === user,
+        }
+
+        return acc;
+    }, {}));
 });
 
-app.put<{ Body: { id: string, text: string; screenY: string; screenX: string }; Reply: {} }>("/api/ticket", async (request, reply) => {
+app.put<{ Body: api.putTicket.request; Reply: api.putTicket.response }>("/api/ticket", async (request, reply) => {
     const user = request.cookies.user;
     const {id, text, screenY, screenX} = request.body;
 
@@ -56,12 +63,12 @@ app.put<{ Body: { id: string, text: string; screenY: string; screenX: string }; 
 
     const data = await db('userData').select('*');
 
-    return {};
+    return reply.send({});
 });
 
 (async () => {
     try {
-        await app.listen({ port: 3001 })
+        await app.listen({port: 3001})
     } catch (err) {
         app.log.error(err)
         process.exit(1)

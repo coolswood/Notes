@@ -55,7 +55,7 @@ export const CustomDragLayer: FC = (props) => {
             <div
                 style={getItemStyles(initialOffset, currentOffset)}
             >
-                <BoxDragPreview title={item.title} />
+                <BoxDragPreview text={item.text} />
             </div>
         </div>
     )
