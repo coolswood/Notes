@@ -20,6 +20,11 @@ app.register(cors, {
   methods: ['GET', 'POST', 'PUT'],
 });
 
+type frontMessages =
+  | api.swMessage.getTickets.frontMessage
+  | api.swMessage.putTicket.frontMessage
+  | api.swMessage.patchTicket.frontMessage;
+
 app.register(async function (fastify) {
   fastify.get(
     '/ws',
@@ -33,11 +38,11 @@ app.register(async function (fastify) {
       const user = req.query.user;
 
       connection.socket.on('message', async (m: Buffer) => {
-        const message = JSON.parse(m.toString());
+        const message: frontMessages = JSON.parse(m.toString());
 
         const db = await initDb();
 
-        if (message.event === 'create') {
+        if (message.event === 'PUT_TICKET') {
           const user = req.query.user;
           const { id, screenY, screenX, text } = message.data;
 
@@ -50,7 +55,7 @@ app.register(async function (fastify) {
           });
         }
 
-        if (message.event === 'update') {
+        if (message.event === 'PATCH_TICKET') {
           const { id, text, screenY, screenX } = message.data;
 
           await db('userData').where({ id }).update({
@@ -64,16 +69,19 @@ app.register(async function (fastify) {
 
         fastify.websocketServer.clients.forEach(function each(client) {
           if (client.readyState === 1) {
-            const tickets = data.reduce<api.getTickets.response>((acc, i) => {
-              acc[i.id] = {
-                text: i.text,
-                screenY: i.screenY,
-                screenX: i.screenX,
-                user: i.user,
-              };
+            const tickets = data.reduce<api.swMessage.getTickets.backMessage>(
+              (acc, i) => {
+                acc[i.id] = {
+                  text: i.text,
+                  screenY: i.screenY,
+                  screenX: i.screenX,
+                  user: i.user,
+                };
 
-              return acc;
-            }, {});
+                return acc;
+              },
+              {}
+            );
 
             const allTickets = JSON.stringify(tickets);
 

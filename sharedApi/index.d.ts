@@ -4,35 +4,41 @@ declare namespace api {
     type response = {};
   }
 
-  namespace getTickets {
-    type request = {};
-    type response = {
-      [id: string]: {
-        text: string;
-        screenY: number;
-        screenX: number;
-        user?: string;
+  namespace swMessage {
+    namespace getTickets {
+      type frontMessage = { event: 'GET_TICKETS' };
+      type backMessage = {
+        [id: string]: {
+          text: string;
+          screenY: number;
+          screenX: number;
+          user?: string;
+        };
       };
-    };
-  }
+    }
 
-  namespace putTicket {
-    type request = {
-      id: string;
-      text: string;
-      screenY: number;
-      screenX: number;
-    };
-    type response = {};
-  }
+    namespace putTicket {
+      type frontMessage = {
+        event: 'PUT_TICKET';
+        data: {
+          id: string;
+          text: string;
+          screenY: number;
+          screenX: number;
+        };
+      };
+    }
 
-  namespace patchTicket {
-    type request = {
-      id: string;
-      text?: string;
-      screenY?: number;
-      screenX?: number;
-    };
-    type response = {};
+    namespace patchTicket {
+      type frontMessage = {
+        event: 'PATCH_TICKET';
+        data: {
+          id: string;
+          text?: string;
+          screenY?: number;
+          screenX?: number;
+        };
+      };
+    }
   }
 }

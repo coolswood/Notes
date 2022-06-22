@@ -3,15 +3,13 @@ import type { FC } from 'react';
 import { useState } from 'react';
 import { useDrop } from 'react-dnd';
 import useWebSocket from 'react-use-websocket';
-import { boxSize, ItemTypes } from 'src/constants';
+import { BoxMap, boxSize, ItemTypes } from 'src/constants';
 import { getRandomInt } from 'src/helper';
 import type { DragItem } from 'src/types';
 import { DraggableBox } from '../DraggableBox/DraggableBox';
 import cookie from 'js-cookie';
 
 import styles from './styles.module.scss';
-
-type BoxMap = api.getTickets.response;
 
 const socketUrl = 'ws://127.0.0.1:3001/ws';
 
@@ -21,10 +19,14 @@ export const Container: FC = () => {
   const { sendJsonMessage } = useWebSocket(socketUrl, {
     queryParams: { user: cookie.get('user')! },
     onOpen: () => {
-      sendJsonMessage({ event: 'getTickets' });
+      sendJsonMessage({
+        event: 'GET_TICKETS',
+      } as api.swMessage.getTickets.frontMessage);
     },
     onMessage: message => {
-      setBoxes(JSON.parse(message.data));
+      setBoxes(
+        JSON.parse(message.data) as api.swMessage.getTickets.backMessage
+      );
     },
     onError: error => {
       console.error('error', error);
@@ -55,7 +57,10 @@ export const Container: FC = () => {
   };
 
   const moveBox = (id: string, screenX: number, screenY: number) => {
-    sendJsonMessage({ event: 'update', data: { id, screenX, screenY } });
+    sendJsonMessage({
+      event: 'PATCH_TICKET',
+      data: { id, screenX, screenY },
+    } as api.swMessage.patchTicket.frontMessage);
 
     setBoxes(
       update(boxes, {
@@ -67,7 +72,10 @@ export const Container: FC = () => {
   };
 
   const onUpdateText = (id: string, text: string) => {
-    sendJsonMessage({ event: 'update', data: { id, text } });
+    sendJsonMessage({
+      event: 'PUT_TICKET',
+      data: { id, text },
+    } as api.swMessage.putTicket.frontMessage);
 
     setBoxes(
       update(boxes, {
