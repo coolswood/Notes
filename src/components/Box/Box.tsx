@@ -7,6 +7,7 @@ import styles from './styles.module.scss';
 
 export interface BoxProps {
   text: string;
+  color: string;
   user?: string;
   preview?: boolean;
   canEdit?: boolean;
@@ -19,6 +20,7 @@ export const Box: FC<BoxProps> = memo(function Box({
   onUpdateText,
   canEdit,
   user,
+  color,
 }) {
   const [value, setValue] = useState(text);
   const [isEdit, setIsEdit] = useState(false);
@@ -30,7 +32,7 @@ export const Box: FC<BoxProps> = memo(function Box({
 
   return (
     <div
-      style={boxSize}
+      style={{ ...boxSize, backgroundColor: color }}
       className={clsx(styles.box, !canEdit && styles.boxDisabled)}
       role={preview ? 'BoxPreview' : 'Box'}
     >

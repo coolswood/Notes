@@ -44,7 +44,7 @@ app.register(async function (fastify) {
 
         if (message.event === 'PUT_TICKET') {
           const user = req.query.user;
-          const { id, screenY, screenX, text } = message.data;
+          const { id, screenY, screenX, text, color } = message.data;
 
           await db('userData').insert({
             id,
@@ -52,6 +52,7 @@ app.register(async function (fastify) {
             screenX,
             user,
             text,
+            color,
           });
         }
 
@@ -76,6 +77,7 @@ app.register(async function (fastify) {
                   screenY: i.screenY,
                   screenX: i.screenX,
                   user: i.user,
+                  color: i.color,
                 };
 
                 return acc;

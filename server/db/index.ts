@@ -6,6 +6,7 @@ declare module 'knex/types/tables' {
     userData: {
       id: string;
       user: string;
+      color: string;
       text: string;
       screenY: number;
       screenX: number;
@@ -30,6 +31,7 @@ export const initDb = async (): Promise<Knex> => {
             table.string('id').index().primary();
             table.string('user');
             table.string('text');
+            table.string('color');
             table.integer('screenY');
             table.integer('screenX');
           }

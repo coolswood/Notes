@@ -11,13 +11,14 @@ const styles: CSSProperties = {
 
 export interface BoxDragPreviewProps {
   text: string;
+  color: string;
 }
 
 export const BoxDragPreview: FC<BoxDragPreviewProps> = memo(
-  function BoxDragPreview({ text }) {
+  function BoxDragPreview({ text, color }) {
     return (
       <div style={styles}>
-        <Box canEdit={true} text={text} preview />
+        <Box color={color} canEdit={true} text={text} preview />
       </div>
     );
   }

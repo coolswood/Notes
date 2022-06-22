@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useDrop } from 'react-dnd';
 import useWebSocket from 'react-use-websocket';
 import { BoxMap, boxSize, ItemTypes } from 'src/constants';
-import { getRandomInt } from 'src/helper';
+import { getRandomInt, randomColourGenerator } from 'src/helper';
 import type { DragItem } from 'src/types';
 import { DraggableBox } from '../DraggableBox/DraggableBox';
 import cookie from 'js-cookie';
@@ -38,11 +38,12 @@ export const Container: FC = () => {
     const id = getRandomInt();
     const screenY = e.screenY - boxSize.height / 2;
     const screenX = e.screenX - boxSize.width / 2;
+    const color = randomColourGenerator();
 
     sendJsonMessage({
-      event: 'create',
-      data: { id, screenX, screenY, text: '' },
-    });
+      event: 'PUT_TICKET',
+      data: { id, screenX, screenY, text: '', color },
+    } as api.swMessage.putTicket.frontMessage);
 
     setBoxes({
       ...boxes,
@@ -51,6 +52,7 @@ export const Container: FC = () => {
           screenY,
           screenX,
           text: '',
+          color,
         },
       },
     });
@@ -73,9 +75,9 @@ export const Container: FC = () => {
 
   const onUpdateText = (id: string, text: string) => {
     sendJsonMessage({
-      event: 'PUT_TICKET',
+      event: 'PATCH_TICKET',
       data: { id, text },
-    } as api.swMessage.putTicket.frontMessage);
+    } as api.swMessage.patchTicket.frontMessage);
 
     setBoxes(
       update(boxes, {

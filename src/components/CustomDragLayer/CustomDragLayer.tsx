@@ -43,13 +43,15 @@ export const CustomDragLayer: FC = props => {
       isDragging: monitor.isDragging(),
     }));
 
+  console.log(item);
+
   if (!isDragging) {
     return null;
   }
   return (
     <div style={layerStyles}>
       <div style={getItemStyles(initialOffset, currentOffset)}>
-        <BoxDragPreview text={item.text} />
+        <BoxDragPreview text={item.text} color={item.color} />
       </div>
     </div>
   );

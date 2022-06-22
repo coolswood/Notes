@@ -13,6 +13,7 @@ declare namespace api {
           screenY: number;
           screenX: number;
           user?: string;
+          color: string;
         };
       };
     }
@@ -25,6 +26,7 @@ declare namespace api {
           text: string;
           screenY: number;
           screenX: number;
+          color: string;
         };
       };
     }

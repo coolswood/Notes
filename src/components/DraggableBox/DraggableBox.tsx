@@ -3,7 +3,7 @@ import { memo, useEffect } from 'react';
 import type { DragSourceMonitor } from 'react-dnd';
 import { useDrag } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
-import { ItemTypes } from 'src/constants';
+import { BoxMap, ItemTypes } from 'src/constants';
 
 import { Box } from '../Box/Box';
 import cookie from 'js-cookie';
@@ -24,25 +24,21 @@ function getStyles(
   };
 }
 
-export interface DraggableBoxProps {
+type DraggableBoxProps = {
   id: string;
-  text: string;
-  screenX: number;
-  screenY: number;
-  user?: string;
   onUpdateText: (text: string) => void;
-}
+} & BoxMap[string];
 
 export const DraggableBox: FC<DraggableBoxProps> = memo(function DraggableBox(
   props
 ) {
-  const { id, text, screenX, screenY, onUpdateText, user } = props;
+  const { id, text, screenX, screenY, onUpdateText, user, color } = props;
   const canEdit = user === cookie.get('user');
 
   const [{ isDragging }, drag, preview] = useDrag(
     () => ({
       type: ItemTypes.BOX,
-      item: { id, screenY, screenX, text },
+      item: { id, screenY, screenX, text, color },
       collect: (monitor: DragSourceMonitor) => ({
         isDragging: monitor.isDragging(),
       }),
@@ -61,6 +57,7 @@ export const DraggableBox: FC<DraggableBoxProps> = memo(function DraggableBox(
       role="DraggableBox"
     >
       <Box
+        color={color}
         text={text}
         canEdit={canEdit}
         onUpdateText={onUpdateText}

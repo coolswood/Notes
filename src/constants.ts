@@ -8,6 +8,7 @@ export type BoxMap = {
     screenY: number;
     screenX: number;
     user?: string;
+    color: string;
   };
 };
 
