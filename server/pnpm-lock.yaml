@@ -3,7 +3,7 @@ lockfileVersion: 5.4
 specifiers:
   '@fastify/cookie': ^7.0.0
   '@fastify/cors': ^8.0.0
-  '@fastify/http-proxy': ^8.0.2
+  '@fastify/websocket': ^6.0.1
   '@types/node': ^18.0.0
   better-sqlite3: ^7.5.3
   fastify: ^4.0.3
@@ -17,7 +17,7 @@ specifiers:
 dependencies:
   '@fastify/cookie': 7.0.0
   '@fastify/cors': 8.0.0
-  '@fastify/http-proxy': 8.0.2
+  '@fastify/websocket': 6.0.1
   '@types/node': 18.0.0
   better-sqlite3: 7.5.3
   fastify: 4.0.3
@@ -69,27 +69,14 @@ packages:
       fast-json-stringify: 4.2.0
     dev: false
 
-  /@fastify/http-proxy/8.0.2:
-    resolution: {integrity: sha512-xGS+dDMyiBmBYl0f1gFkP391sevCWb1C/xmve7PXGrw+YJBAf+GL0Ai6j8QRgYfSR7YmcrN+tFy3HOB3CMgetA==}
+  /@fastify/websocket/6.0.1:
+    resolution: {integrity: sha512-RdrPMpD/gjm7ocqFZN2TVHRAjDNG483dvH7cbMXJPTvIei2xz/sqa5TwtqGPrupU91GZjlUYQqUjQb/cQHA7kw==}
     dependencies:
-      '@fastify/reply-from': 8.0.0
+      fastify-plugin: 3.0.1
       ws: 8.8.0
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
-    dev: false
-
-  /@fastify/reply-from/8.0.0:
-    resolution: {integrity: sha512-tZDw7gY4IC6rXsAMrxK/s3QZ1231eGZQ+ghwrd5ogeYhsfcaA9NEu4pkkjO6Btc4BvsBGRDRZiZyYQ37SkLT4w==}
-    engines: {node: '>=12.18'}
-    dependencies:
-      end-of-stream: 1.4.4
-      fastify-plugin: 3.0.1
-      http-errors: 2.0.0
-      pump: 3.0.0
-      semver: 7.3.7
-      tiny-lru: 8.0.2
-      undici: 5.5.1
     dev: false
 
   /@jridgewell/resolve-uri/3.0.7:
@@ -476,11 +463,6 @@ packages:
     resolution: {integrity: sha512-0ISdNousHvZT2EiFlZeZAHBUvSxmKswVCEf8hW7KWgG4a8MVEu/3Vb6uWYozkjylyCxe0JBIiRB1jV45S70WVQ==}
     dev: false
 
-  /depd/2.0.0:
-    resolution: {integrity: sha512-g7nH6P6dyDioJogAAGprGpCtVImJhpPk/roCzdb3fIh61/s/nPsfR6onyMwkCAR/OlC3yBC0lESvUoQEAssIrw==}
-    engines: {node: '>= 0.8'}
-    dev: false
-
   /detect-libc/2.0.1:
     resolution: {integrity: sha512-463v3ZeIrcWtdgIg6vI6XUncguvr2TnGl4SzDXinkt9mSLpBJKXT3mW6xT3VQdDN11+WVs29pgvivTc4Lp8v+w==}
     engines: {node: '>=8'}
@@ -733,17 +715,6 @@ packages:
 
   /http-cache-semantics/4.1.0:
     resolution: {integrity: sha512-carPklcUh7ROWRK7Cv27RPtdhYhUsela/ue5/jKzjegVvXDqM2ILE9Q2BGn9JZJh1g87cp56su/FgQSzcWS8cQ==}
-    dev: false
-
-  /http-errors/2.0.0:
-    resolution: {integrity: sha512-FtwrG/euBzaEjYeRqOgly7G0qviiXoJWnvEH2Z1plBdXgbyjv34pHTSb9zoeHMyDy33+DWy5Wt9Wo+TURtOYSQ==}
-    engines: {node: '>= 0.8'}
-    dependencies:
-      depd: 2.0.0
-      inherits: 2.0.4
-      setprototypeof: 1.2.0
-      statuses: 2.0.1
-      toidentifier: 1.0.1
     dev: false
 
   /ieee754/1.2.1:
@@ -1329,10 +1300,6 @@ packages:
     resolution: {integrity: sha512-cHMAtSXilfyBePduZEBVPTCftTQWz6ehWJD5YNUg4mqvRosrrjKbo4WS8JkB0/RxonMoohHm7cOGH60mDkRQ9w==}
     dev: false
 
-  /setprototypeof/1.2.0:
-    resolution: {integrity: sha512-E5LDX7Wrp85Kil5bhZv46j8jOeboKq5JMmYM3gVGdGH8xFpPWXUMsNrlODCrkoxMEeNi/XZIwuRvY4XNwYMJpw==}
-    dev: false
-
   /signal-exit/3.0.7:
     resolution: {integrity: sha512-wnD2ZE+l+SPC/uoS0vXeE9L1+0wuaMqKlfz9AMUo38JsyLSBWSFcHR1Rri62LZc12vLr1gb3jl7iwQhgwpAbGQ==}
     dev: false
@@ -1358,11 +1325,6 @@ packages:
   /split2/4.1.0:
     resolution: {integrity: sha512-VBiJxFkxiXRlUIeyMQi8s4hgvKCSjtknJv/LVYbrgALPwf5zSKmEwV9Lst25AkvMDnvxODugjdl6KZgwKM1WYQ==}
     engines: {node: '>= 10.x'}
-    dev: false
-
-  /statuses/2.0.1:
-    resolution: {integrity: sha512-RwNA9Z/7PrK06rYLIzFMlaF+l73iwpzsqRIFgbMLbTcLD6cOao82TaWefPXQvB2fOC4AjuYSEndS7N/mTCbkdQ==}
-    engines: {node: '>= 0.8'}
     dev: false
 
   /stream-shift/1.0.1:
@@ -1477,11 +1439,6 @@ packages:
       is-number: 7.0.0
     dev: false
 
-  /toidentifier/1.0.1:
-    resolution: {integrity: sha512-o5sSPKEkg/DIQNmH43V0/uerLrpzVedkUh8tGNvaeXpfpuwjKenlSox/2O/BTlZUtEe+JG7s5YhEz608PlAHRA==}
-    engines: {node: '>=0.6'}
-    dev: false
-
   /touch/3.1.0:
     resolution: {integrity: sha512-WBx8Uy5TLtOSRtIq+M03/sKDrXCLHxwDcquSP2c43Le03/9serjQBIztjRz6FkJez9D/hleyAXTBGLwwZUw9lA==}
     hasBin: true
@@ -1553,11 +1510,6 @@ packages:
 
   /undefsafe/2.0.5:
     resolution: {integrity: sha512-WxONCrssBM8TSPRqN5EmsjVrsv4A8X12J4ArBiiayv3DyyG3ZlIg6yysuuSYdZsVz3TKcTg2fd//Ujd4CHV1iA==}
-    dev: false
-
-  /undici/5.5.1:
-    resolution: {integrity: sha512-MEvryPLf18HvlCbLSzCW0U00IMftKGI5udnjrQbC5D4P0Hodwffhv+iGfWuJwg16Y/TK11ZFK8i+BPVW2z/eAw==}
-    engines: {node: '>=12.18'}
     dev: false
 
   /unique-string/2.0.0:
