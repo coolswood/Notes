@@ -1,143 +1,109 @@
-import fastify, {FastifyRequest} from 'fastify';
-import cookie, {FastifyCookieOptions} from '@fastify/cookie';
+import fastify, { FastifyRequest } from 'fastify';
+import cookie, { FastifyCookieOptions } from '@fastify/cookie';
 import cors from '@fastify/cors';
 import websocket from '@fastify/websocket';
-import {initDb} from "./db";
+import { initDb } from './db';
 
-const app = fastify({logger: true});
-
-const hours_3 = 1000 * 60 * 60 * 3;
+const app = fastify({ logger: true });
 
 app.register(cookie, {
-    parseOptions: {
-        sameSite: true,
-        path: '/',
-    }
-} as FastifyCookieOptions)
+  parseOptions: {
+    sameSite: true,
+    path: '/',
+  },
+} as FastifyCookieOptions);
 
-app.register(websocket)
+app.register(websocket);
 
 app.register(cors, {
-    origin: "*",
-    methods: ["GET", "POST", "PUT"],
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT'],
 });
 
 app.register(async function (fastify) {
-    fastify.get('/ws', {websocket: true}, (connection /* SocketStream */, req: FastifyRequest<{
-        Querystring: { user: string }
-    }>) => {
-        connection.socket.on('message', async (m: Buffer) => {
-            const message = JSON.parse(m.toString());
+  fastify.get(
+    '/ws',
+    { websocket: true },
+    (
+      connection,
+      req: FastifyRequest<{
+        Querystring: { user: string };
+      }>
+    ) => {
+      const user = req.query.user;
 
-            const db = await initDb();
+      connection.socket.on('message', async (m: Buffer) => {
+        const message = JSON.parse(m.toString());
 
-            if (message.event === 'getTickets') {
-                const user = req.query.user;
-                const data = await db('userData').select('*');
+        const db = await initDb();
 
-                const tickets = data.reduce<api.getTickets.response>((acc, i) => {
-                    acc[i.id] = {
-                        text: i.text,
-                        screenY: i.screenY,
-                        screenX: i.screenX,
-                        canEdit: i.user === user,
-                        user: i.user !== user ? user : undefined
-                    }
+        if (message.event === 'create') {
+          const user = req.query.user;
+          const { id, screenY, screenX, text } = message.data;
 
-                    return acc;
-                }, {});
+          await db('userData').insert({
+            id,
+            screenY,
+            screenX,
+            user,
+            text,
+          });
+        }
 
-                connection.socket.send(JSON.stringify(tickets));
-            }
+        if (message.event === 'update') {
+          const { id, text, screenY, screenX } = message.data;
 
-            if(message.event === 'create') {
-                const user = req.query.user;
-                const {id, screenY, screenX} = message.data;
+          await db('userData').where({ id }).update({
+            text,
+            screenY,
+            screenX,
+          });
+        }
 
-                await db('userData').insert({
-                    id, screenY, screenX, user
-                });
-            }
+        const data = await db('userData').select('*');
 
-            if(message.event === 'update') {
-                const {id, text, screenY, screenX} = message.data;
-
-                await db('userData').where({id}).update({
-                    text, screenY, screenX
-                });
-            }
-
-            const user = req.query.user;
-
-            const data = await db('userData').select('*');
-
+        fastify.websocketServer.clients.forEach(function each(client) {
+          if (client.readyState === 1) {
             const tickets = data.reduce<api.getTickets.response>((acc, i) => {
-                acc[i.id] = {
-                    text: i.text,
-                    screenY: i.screenY,
-                    screenX: i.screenX,
-                    canEdit: i.user === user,
-                    user: i.user !== user ? user : undefined
-                }
+              acc[i.id] = {
+                text: i.text,
+                screenY: i.screenY,
+                screenX: i.screenX,
+                user: i.user,
+              };
 
-                return acc;
+              return acc;
             }, {});
 
             const allTickets = JSON.stringify(tickets);
 
-            fastify.websocketServer.clients.forEach(async function each(client: any) {
-                if (client.readyState === 1) {
-                    connection.socket.send(allTickets);
-                }
-            })
-        })
-    })
-})
+            client.send(allTickets);
+          }
+        });
+      });
+    }
+  );
+});
 
-app.put<{ Body: { user: string }; Reply: {} }>("/api/create", async (request, reply) => {
+app.put<{ Body: api.auth.request; Reply: api.auth.response }>(
+  '/api/auth',
+  async (request, reply) => {
     const user = request.body.user;
 
-    const db = await initDb()
+    // This assumes the addition to the database, encryption and other things. But since this is not a condition of the test job,
+    // I will just use the username in the cookie
 
-    await db('userName').insert({user});
+    reply.setCookie('user', user);
 
-    const data = await db('userName').select(['user']);
-
-    reply.setCookie('user', user, {maxAge: hours_3});
-
-    return true;
-});
-
-app.get<{ Body: api.getTickets.request; Reply: api.getTickets.response }>("/api/tickets", async (request, reply) => {
-    const user = request.cookies.user;
-
-    if (user == undefined) {
-        return reply.status(401).send();
-    }
-
-    const db = await initDb();
-
-    const data = await db('userData').select('*');
-
-    return reply.send(data.reduce<api.getTickets.response>((acc, i) => {
-
-        acc[i.id] = {
-            text: i.text,
-            screenY: i.screenY,
-            screenX: i.screenX,
-            canEdit: i.user === user,
-            user: i.user !== user ? user : undefined
-        }
-
-        return acc;
-    }, {}));
-});
+    return reply.send({});
+  }
+);
 
 (async () => {
-    try {
-        await app.listen({port: 3001})
-    } catch (err) {
-        app.log.error(err)
-        process.exit(1)
-    }
+  try {
+    await app.listen({ port: 3001 });
+  } catch (err) {
+    app.log.error(err);
+    process.exit(1);
+  }
 })();

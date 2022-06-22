@@ -1,10 +1,10 @@
 export const ItemTypes = {
-    BOX: 'box',
-}
+  BOX: 'box',
+};
 
 export const boxSize = {
-    width: 200,
-    height: 300,
-}
+  width: 200,
+  height: 300,
+};
 
 export const placeholder = 'Click on text to edit';
