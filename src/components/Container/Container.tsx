@@ -19,14 +19,18 @@ export const Container: FC = () => {
   const { sendJsonMessage } = useWebSocket(socketUrl, {
     queryParams: { user: cookie.get('user')! },
     onOpen: () => {
-      sendJsonMessage({
+      const message: api.swMessage.getTickets.frontMessage = {
         event: 'GET_TICKETS',
-      } as api.swMessage.getTickets.frontMessage);
+      };
+
+      sendJsonMessage(message);
     },
     onMessage: message => {
-      setBoxes(
-        JSON.parse(message.data) as api.swMessage.getTickets.backMessage
+      const data: api.swMessage.getTickets.backMessage = JSON.parse(
+        message.data
       );
+
+      setBoxes(data);
     },
     onError: error => {
       console.error('error', error);
@@ -40,10 +44,12 @@ export const Container: FC = () => {
     const screenX = e.screenX - boxSize.width / 2;
     const color = randomColourGenerator();
 
-    sendJsonMessage({
+    const message: api.swMessage.putTicket.frontMessage = {
       event: 'PUT_TICKET',
       data: { id, screenX, screenY, text: '', color },
-    } as api.swMessage.putTicket.frontMessage);
+    };
+
+    sendJsonMessage(message);
 
     setBoxes({
       ...boxes,
@@ -59,10 +65,12 @@ export const Container: FC = () => {
   };
 
   const moveBox = (id: string, screenX: number, screenY: number) => {
-    sendJsonMessage({
+    const message: api.swMessage.patchTicket.frontMessage = {
       event: 'PATCH_TICKET',
       data: { id, screenX, screenY },
-    } as api.swMessage.patchTicket.frontMessage);
+    };
+
+    sendJsonMessage(message);
 
     setBoxes(
       update(boxes, {
@@ -74,10 +82,12 @@ export const Container: FC = () => {
   };
 
   const onUpdateText = (id: string, text: string) => {
-    sendJsonMessage({
+    const message: api.swMessage.patchTicket.frontMessage = {
       event: 'PATCH_TICKET',
       data: { id, text },
-    } as api.swMessage.patchTicket.frontMessage);
+    };
+
+    sendJsonMessage(message);
 
     setBoxes(
       update(boxes, {
