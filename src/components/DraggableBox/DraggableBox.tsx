@@ -3,10 +3,11 @@ import { memo, useEffect } from 'react';
 import type { DragSourceMonitor } from 'react-dnd';
 import { useDrag } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
-import { BoxMap, ItemTypes } from 'src/constants';
+import { ItemTypes } from 'src/constants';
 
 import { Box } from '../Box/Box';
 import cookie from 'js-cookie';
+import type { BoxMap } from 'src/types';
 
 function getStyles(
   left: number,

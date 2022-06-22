@@ -3,13 +3,13 @@ import type { FC } from 'react';
 import { useState } from 'react';
 import { useDrop } from 'react-dnd';
 import useWebSocket from 'react-use-websocket';
-import { BoxMap, boxSize, ItemTypes } from 'src/constants';
+import { boxSize, ItemTypes } from 'src/constants';
 import { getRandomInt, randomColourGenerator } from 'src/helper';
-import type { DragItem } from 'src/types';
 import { DraggableBox } from '../DraggableBox/DraggableBox';
 import cookie from 'js-cookie';
 
 import styles from './styles.module.scss';
+import type { BoxMap } from 'src/types';
 
 const socketUrl = 'ws://127.0.0.1:3001/ws';
 
@@ -91,7 +91,7 @@ export const Container: FC = () => {
   const [, drop] = useDrop(
     () => ({
       accept: ItemTypes.BOX,
-      drop(item: DragItem, monitor) {
+      drop(item: BoxMap[string] & { id: string }, monitor) {
         const delta = monitor.getDifferenceFromInitialOffset() as {
           x: number;
           y: number;
@@ -119,7 +119,7 @@ export const Container: FC = () => {
       <div className={styles.clickListener} onClick={createNewBox} />
       {Object.keys(boxes).map(key => (
         <DraggableBox
-          onUpdateText={text => onUpdateText(key, text)}
+          onUpdateText={(text: string) => onUpdateText(key, text)}
           key={key}
           id={key}
           {...boxes[key]}

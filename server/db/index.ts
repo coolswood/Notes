@@ -29,7 +29,7 @@ export const initDb = async (): Promise<Knex> => {
           'userData',
           function (table: Knex.CreateTableBuilder) {
             table.string('id').index().primary();
-            table.string('user');
+            table.string('user').index();
             table.string('text');
             table.string('color');
             table.integer('screenY');

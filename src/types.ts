@@ -1,6 +1,9 @@
-export interface DragItem {
-    id: string
-    type: string
-    screenX: number
-    screenY: number
-}
+export type BoxMap = {
+  [id: string]: {
+    text: string;
+    screenY: number;
+    screenX: number;
+    user?: string;
+    color: string;
+  };
+};

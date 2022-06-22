@@ -43,7 +43,6 @@ app.register(async function (fastify) {
         const db = await initDb();
 
         if (message.event === 'PUT_TICKET') {
-          const user = req.query.user;
           const { id, screenY, screenX, text, color } = message.data;
 
           await db('userData').insert({
@@ -68,25 +67,25 @@ app.register(async function (fastify) {
 
         const data = await db('userData').select('*');
 
+        const tickets = data.reduce<api.swMessage.getTickets.backMessage>(
+          (acc, i) => {
+            acc[i.id] = {
+              text: i.text,
+              screenY: i.screenY,
+              screenX: i.screenX,
+              user: i.user,
+              color: i.color,
+            };
+
+            return acc;
+          },
+          {}
+        );
+
+        const allTickets = JSON.stringify(tickets);
+
         fastify.websocketServer.clients.forEach(function each(client) {
           if (client.readyState === 1) {
-            const tickets = data.reduce<api.swMessage.getTickets.backMessage>(
-              (acc, i) => {
-                acc[i.id] = {
-                  text: i.text,
-                  screenY: i.screenY,
-                  screenX: i.screenX,
-                  user: i.user,
-                  color: i.color,
-                };
-
-                return acc;
-              },
-              {}
-            );
-
-            const allTickets = JSON.stringify(tickets);
-
             client.send(allTickets);
           }
         });

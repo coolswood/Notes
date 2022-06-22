@@ -43,8 +43,6 @@ export const CustomDragLayer: FC = props => {
       isDragging: monitor.isDragging(),
     }));
 
-  console.log(item);
-
   if (!isDragging) {
     return null;
   }
